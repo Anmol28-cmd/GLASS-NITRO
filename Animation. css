@@ -1,0 +1,200 @@
+/* Advanced Animations */
+
+@keyframes glowPulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px currentColor);
+    }
+    50% {
+        filter: drop-shadow(0 0 20px currentColor);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes crackSpread {
+    0% {
+        stroke-dasharray: 0, 1000;
+    }
+    100% {
+        stroke-dasharray: 1000, 0;
+    }
+}
+
+@keyframes shatter {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.9) rotate(5deg);
+    }
+}
+
+/* Parallax scroll effects */
+.parallax {
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Glass morph effects */
+.glass-morph {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Neon glow animations */
+.neon-glow {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Hover tilt effect */
+[data-tilt] {
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+[data-tilt]:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+}
+
+/* Text reveal animation */
+.text-reveal {
+    overflow: hidden;
+}
+
+.text-reveal span {
+    display: inline-block;
+    animation: textSlideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes textSlideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Particle float effect */
+@keyframes particleFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(10px, -10px);
+    }
+    50% {
+        transform: translate(-10px, 10px);
+    }
+    75% {
+        transform: translate(10px, 10px);
+    }
+}
+
+.particle {
+    animation: particleFloat 20s ease-in-out infinite;
+}
+
+/* Loading spinner */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Fade in on scroll */
+.fade-in-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger children animation */
+.stagger-children > * {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.stagger-children.animate > * {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.stagger-children.animate > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children.animate > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children.animate > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children.animate > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children.animate > *:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Glitch effect */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--neon-cyan);
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 var(--neon-magenta);
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(71px, 9999px, 60px, 0); }
+    5% { clip: rect(5px, 9999px, 133px, 0); }
+    10% { clip: rect(94px, 9999px, 117px, 0); }
+    /* ... more keyframes ... */
+    100% { clip: rect(29px, 9999px, 87px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+    0% { clip: rect(129px, 9999px, 36px, 0); }
+    5% { clip: rect(36px, 9999px, 136px, 0); }
+    /* ... more keyframes ... */
+    100% { clip: rect(76px, 9999px, 119px, 0); }
+}
