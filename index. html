@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Glass Racer - A high-speed racing game where fragility meets velocity. Every collision matters.">
+    <meta name="keywords" content="racing game, glass racer, indie game, unity game">
+    <title>The Glass Racer | Speed is Fragile</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav" id="mainNav">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">💎</span>
+                <span class="logo-text">GLASS RACER</span>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="gameplay.html" class="nav-link">Gameplay</a></li>
+                <li><a href="mechanics.html" class="nav-link">Mechanics</a></li>
+                <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li><a href="download.html" class="nav-link cta-nav">Download</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <canvas id="particleCanvas"></canvas>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">Now in Alpha</div>
+            <h1 class="hero-title">
+                <span class="title-line">THE</span>
+                <span class="title-line glow-text">GLASS</span>
+                <span class="title-line">RACER</span>
+            </h1>
+            <p class="hero-tagline">Speed is Fragile. Destruction is Beautiful.</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">300+</div>
+                    <div class="stat-label">km/h Max Speed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Fracture Patterns</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Pure Glass</div>
+                </div>
+            </div>
+            <div class="hero-cta">
+                <a href="download.html" class="btn btn-primary">
+                    <span>Play Now</span>
+                    <span class="btn-arrow">→</span>
+                </a>
+                <a href="#trailer" class="btn btn-secondary">
+                    <span>Watch Trailer</span>
+                    <span class="btn-icon">▶</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Interactive Glass Car -->
+        <div class="interactive-car" id="interactiveCar">
+            <div class="car-container">
+                <svg viewBox="0 0 400 200" class="car-svg">
+                    <!-- Car body -->
+                    <defs>
+                        <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:rgba(255,255,255,0.2)" />
+                            <stop offset="100%" style="stop-color:rgba(0,240,255,0.1)" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Main body -->
+                    <path id="carBody" d="M 50 120 L 100 80 L 250 70 L 320 100 L 350 120 L 340 140 L 60 150 Z" 
+                          fill="url(#glassGradient)" 
+                          stroke="rgba(0,240,255,0.6)" 
+                          stroke-width="2"
+                          filter="url(#glow)"/>
+                    
+                    <!-- Windshield -->
+                    <path id="windshield" d="M 120 85 L 180 75 L 220 75 L 240 85 Z" 
+                          fill="rgba(255,255,255,0.15)" 
+                          stroke="rgba(255,255,255,0.4)" 
+                          stroke-width="1"/>
+                    
+                    <!-- Wheels -->
+                    <circle cx="100" cy="150" r="20" fill="rgba(0,0,0,0.3)" stroke="#00f0ff" stroke-width="2"/>
+                    <circle cx="300" cy="150" r="20" fill="rgba(0,0,0,0.3)" stroke="#00f0ff" stroke-width="2"/>
+                    
+                    <!-- Crack overlay (hidden by default) -->
+                    <g id="crackOverlay" opacity="0">
+                        <path class="crack-line" d="M 150 90 L 200 120 L 180 140" stroke="white" stroke-width="2" fill="none" opacity="0.8"/>
+                        <path class="crack-line" d="M 200 85 L 220 100 L 210 120" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+                        <path class="crack-line" d="M 180 80 L 160 110" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
+                    </g>
+                </svg>
+                <div class="car-label">Click to Fracture</div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Scroll to Explore</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- Features Overview -->
+    <section class="features-overview">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Core Concept</span>
+                <h2 class="section-title">Not Just Another Racing Game</h2>
+                <p class="section-subtitle">Every decision matters. Every collision changes everything.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" data-tilt>
+                    <div class="feature-icon">💔</div>
+                    <h3 class="feature-title">Structural Integrity</h3>
+                    <p class="feature-description">
+                        Forget health bars. Your car is made of glass. Minor bumps create spider-web cracks that obscure vision. Hard hits shatter entire panels. Keep your chassis core intact or face total destruction.
+                    </p>
+                    <div class="feature-stat">
+                        <span class="stat-highlight">100%</span> realistic fracture physics
+                    </div>
+                </div>
+
+                <div class="feature-card" data-tilt>
+                    <div class="feature-icon">🌈</div>
+                    <h3 class="feature-title">Light Refraction</h3>
+                    <p class="feature-description">
+                        Your glass body refracts light at precise angles. Drive through laser beams to trigger prism boosts, light shields, or even stealth mode. Master the spectrum to dominate.
+                    </p>
+                    <div class="feature-stat">
+                        <span class="stat-highlight">3x</span> speed during perfect refraction
+                    </div>
+                </div>
+
+                <div class="feature-card" data-tilt>
+                    <div class="feature-icon">🔥</div>
+                    <h3 class="feature-title">Dynamic Repair</h3>
+                    <p class="feature-description">
+                        Race over molten tracks to melt cracks back together. But stay too long and your car deforms, losing aerodynamic efficiency. Choose between speed and survival.
+                    </p>
+                    <div class="feature-stat">
+                        <span class="stat-highlight">10 HP/s</span> repair rate
+                    </div>
+                </div>
+
+                <div class="feature-card" data-tilt>
+                    <div class="feature-icon">🧩</div>
+                    <h3 class="feature-title">Shard Collection</h3>
+                    <p class="feature-description">
+                        Collect shattered remains from destroyed rivals to regrow your own broken parts. Each race creates a unique, jagged glass machine unlike any other.
+                    </p>
+                    <div class="feature-stat">
+                        <span class="stat-highlight">5 shards</span> = 1 piece regrown
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Trailer Section -->
+    <section class="trailer-section" id="trailer">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Experience It</span>
+                <h2 class="section-title">Crystal Symphony in Motion</h2>
+            </div>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <div class="play-button" id="playButton">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="rgba(0,240,255,0.2)" stroke="#00f0ff" stroke-width="2"/>
+                            <polygon points="40,30 40,70 70,50" fill="#00f0ff"/>
+                        </svg>
+                    </div>
+                    <p class="video-label">Click to Watch Gameplay Trailer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gameplay Mechanics Preview -->
+    <section class="mechanics-preview">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">How It Works</span>
+                <h2 class="section-title">Precision Over Power</h2>
+            </div>
+
+            <div class="mechanics-showcase">
+                <div class="mechanic-demo">
+                    <div class="demo-visual" id="integrityDemo">
+                        <canvas id="integrityCanvas" width="400" height="300"></canvas>
+                    </div>
+                    <div class="demo-info">
+                        <h3>Fracture Point System</h3>
+                        <p>Watch how damage accumulates and spreads across the vehicle surface. Each impact creates unique crack patterns based on force and angle.</p>
+                        <button class="btn btn-outline" onclick="simulateImpact()">Simulate Impact</button>
+                    </div>
+                </div>
+
+                <div class="mechanic-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-tab="integrity">Integrity</button>
+                        <button class="tab-btn" data-tab="refraction">Refraction</button>
+                        <button class="tab-btn" data-tab="repair">Repair</button>
+                        <button class="tab-btn" data-tab="collection">Collection</button>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="integrity">
+                            <h4>Structural Integrity System</h4>
+                            <ul class="feature-list">
+                                <li>✓ Real-time fracture calculation</li>
+                                <li>✓ Vision obstruction from cracks</li>
+                                <li>✓ Dynamic weight reduction</li>
+                                <li>✓ Handling instability mechanics</li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="refraction">
+                            <h4>Light Refraction Powers</h4>
+                            <ul class="feature-list">
+                                <li>✓ Angle-based activation</li>
+                                <li>✓ Speed boost at 0° alignment</li>
+                                <li>✓ Shield mode at 45°</li>
+                                <li>✓ Stealth at perfect speed</li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="repair">
+                            <h4>Molten Track Repair</h4>
+                            <ul class="feature-list">
+                                <li>✓ Heat-based glass fusion</li>
+                                <li>✓ Progressive deformation risk</li>
+                                <li>✓ Strategic timing required</li>
+                                <li>✓ Permanent aerodynamic changes</li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="collection">
+                            <h4>Shard Collection</h4>
+                            <ul class="feature-list">
+                                <li>✓ Magnetic shard attraction</li>
+                                <li>✓ Piece-priority algorithm</li>
+                                <li>✓ Jagged regrowth aesthetics</li>
+                                <li>✓ Unique vehicle evolution</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="community-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Join Us</span>
+                <h2 class="section-title">Become a Glass Racer</h2>
+            </div>
+
+            <div class="community-grid">
+                <div class="community-card">
+                    <div class="community-icon">💬</div>
+                    <h3>Discord Community</h3>
+                    <p>Join 5,000+ racers discussing strategies, sharing crashes, and reporting bugs.</p>
+                    <a href="#" class="btn btn-outline">Join Discord</a>
+                </div>
+
+                <div class="community-card">
+                    <div class="community-icon">📰</div>
+                    <h3>Development Blog</h3>
+                    <p>Weekly updates on new features, physics improvements, and track designs.</p>
+                    <a href="#" class="btn btn-outline">Read Blog</a>
+                </div>
+
+                <div class="community-card">
+                    <div class="community-icon">🎮</div>
+                    <h3>Beta Access</h3>
+                    <p>Get early access to new builds and help shape the future of Glass Racer.</p>
+                    <a href="download.html" class="btn btn-outline">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <div class="newsletter-text">
+                    <h2>Stay Updated</h2>
+                    <p>Get the latest news, updates, and exclusive content delivered to your inbox.</p>
+                </div>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" placeholder="Enter your email" required class="newsletter-input">
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <span class="logo-icon">💎</span>
+                        <span class="logo-text">GLASS RACER</span>
+                    </div>
+                    <p class="footer-description">
+                        A revolutionary racing experience where precision meets destruction.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Twitter</a>
+                        <a href="#" class="social-link">Discord</a>
+                        <a href="#" class="social-link">YouTube</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Game</h4>
+                    <ul class="footer-links">
+                        <li><a href="gameplay.html">Gameplay</a></li>
+                        <li><a href="mechanics.html">Mechanics</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="download.html">Download</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Community</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Discord Server</a></li>
+                        <li><a href="#">Forums</a></li>
+                        <li><a href="#">Leaderboards</a></li>
+                        <li><a href="#">Fan Art</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Bug Reports</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Press Kit</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 The Glass Racer. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/particles.js"></script>
+    <script src="js/glass-simulation.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
