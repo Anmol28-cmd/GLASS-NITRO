@@ -1,0 +1,266 @@
+// Main JavaScript for Glass Racer Website
+
+// Navigation scroll effect
+const nav = document.getElementById('mainNav');
+const menuToggle = document.getElementById('menuToggle');
+const navMenu = document.getElementById('navMenu');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+// Mobile menu toggle
+menuToggle?.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    menuToggle.classList.toggle('active');
+});
+
+// Close mobile menu when link is clicked
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        menuToggle.classList.remove('active');
+    });
+});
+
+// Interactive glass car crack effect
+const carBody = document.getElementById('carBody');
+const crackOverlay = document.getElementById('crackOverlay');
+let crackLevel = 0;
+let crackTimeout;
+
+carBody?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    
+    if (crackLevel < 3) {
+        crackLevel++;
+        crackOverlay.style.opacity = crackLevel * 0.3;
+        
+        // Add new crack lines dynamically
+        const crackGroup = crackOverlay;
+        const newCrack = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        
+        // Random crack pattern
+        const startX = Math.random() * 300 + 50;
+        const startY = Math.random() * 100 + 50;
+        const endX = Math.random() * 300 + 50;
+        const endY = Math.random() * 100 + 50;
+        
+        newCrack.setAttribute('d', `M ${startX} ${startY} L ${endX} ${endY}`);
+        newCrack.setAttribute('stroke', 'white');
+        newCrack.setAttribute('stroke-width', (4 - crackLevel) / 2);
+        newCrack.setAttribute('fill', 'none');
+        newCrack.setAttribute('opacity', 0.6 + (crackLevel * 0.1));
+        newCrack.classList.add('crack-line');
+        
+        crackGroup.appendChild(newCrack);
+        
+        // Trigger crack spread animation
+        const crackLines = crackGroup.querySelectorAll('.crack-line');
+        crackLines.forEach((line, index) => {
+            line.style.animation = `crackSpread 0.5s ease-out ${index * 0.1}s forwards`;
+        });
+        
+        // Shatter effect at max cracks
+        if (crackLevel >= 3) {
+            clearTimeout(crackTimeout);
+            crackTimeout = setTimeout(() => {
+                triggerShatterEffect();
+            }, 500);
+        }
+    }
+});
+
+function triggerShatterEffect() {
+    const carSvg = document.querySelector('.car-svg');
+    carSvg.style.animation = 'shatter 0.5s ease-out forwards';
+    
+    // Create shard particles
+    createShardParticles(20);
+    
+    // Reset after animation
+    setTimeout(() => {
+        resetCar();
+    }, 1500);
+}
+
+function createShardParticles(count) {
+    const container = document.querySelector('.interactive-car');
+    const rect = container.getBoundingClientRect();
+    
+    for (let i = 0; i < count; i++) {
+        const shard = document.createElement('div');
+        shard.style.position = 'absolute';
+        shard.style.width = `${Math.random() * 10 + 5}px`;
+        shard.style.height = `${Math.random() * 10 + 5}px`;
+        shard.style.background = 'rgba(0, 240, 255, 0.8)';
+        shard.style.left = `${rect.width / 2}px`;
+        shard.style.top = `${rect.height / 2}px`;
+        shard.style.pointerEvents = 'none';
+        shard.style.zIndex = '1000';
+        
+        container.appendChild(shard);
+        
+        // Animate shard
+        const angle = (Math.PI * 2 * i) / count;
+        const velocity = Math.random() * 100 + 50;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        animateShard(shard, vx, vy);
+    }
+}
+
+function animateShard(shard, vx, vy) {
+    let x = parseFloat(shard.style.left);
+    let y = parseFloat(shard.style.top);
+    let opacity = 1;
+    let rotation = 0;
+    
+    const animate = () => {
+        x += vx * 0.016;
+        y += vy * 0.016;
+        vy += 9.8 * 0.016; // Gravity
+        opacity -= 0.02;
+        rotation += 5;
+        
+        shard.style.left = `${x}px`;
+        shard.style.top = `${y}px`;
+        shard.style.opacity = opacity;
+        shard.style.transform = `rotate(${rotation}deg)`;
+        
+        if (opacity > 0) {
+            requestAnimationFrame(animate);
+        } else {
+            shard.remove();
+        }
+    };
+    
+    requestAnimationFrame(animate);
+}
+
+function resetCar() {
+    crackLevel = 0;
+    const carSvg = document.querySelector('.car-svg');
+    carSvg.style.animation = 'fadeIn 0.5s ease-in';
+    
+    // Clear all cracks
+    const crackOverlay = document.getElementById('crackOverlay');
+    crackOverlay.innerHTML = `
+        <path class="crack-line" d="M 150 90 L 200 120 L 180 140" stroke="white" stroke-width="2" fill="none" opacity="0.8"/>
+        <path class="crack-line" d="M 200 85 L 220 100 L 210 120" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <path class="crack-line" d="M 180 80 L 160 110" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
+    `;
+    crackOverlay.style.opacity = '0';
+}
+
+// Tab system
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabPanes = document.querySelectorAll('.tab-pane');
+
+tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const targetTab = button.getAttribute('data-tab');
+        
+        // Remove active class from all buttons and panes
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanes.forEach(pane => pane.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding pane
+        button.classList.add('active');
+        document.getElementById(targetTab).classList.add('active');
+    });
+});
+
+// Intersection Observer for scroll animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            entry.target.classList.add('animate');
+        }
+    });
+}, observerOptions);
+
+// Observe elements
+document.querySelectorAll('.fade-in-scroll').forEach(el => observer.observe(el));
+document.querySelectorAll('.stagger-children').forEach(el => observer.observe(el));
+document.querySelectorAll('.feature-card').forEach(el => {
+    el.classList.add('fade-in-scroll');
+    observer.observe(el);
+});
+
+// Tilt effect for cards
+document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = ((y - centerY) / centerY) * 5;
+        const rotateY = ((centerX - x) / centerX) * 5;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    });
+    
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+    });
+});
+
+// Newsletter form
+const newsletterForm = document.getElementById('newsletterForm');
+
+newsletterForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = e.target.querySelector('input[type="email"]').value;
+    
+    // Simulate API call
+    alert(`Thank you for subscribing! We'll send updates to ${email}`);
+    e.target.reset();
+});
+
+// Video placeholder click
+const playButton = document.getElementById('playButton');
+const videoPlaceholder = document.querySelector('.video-placeholder');
+
+playButton?.addEventListener('click', () => {
+    // In production, this would load the actual video
+    alert('Trailer would play here. Replace with actual video embed.');
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    });
+});
+
+// Preload optimization
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+});
+
+console.log('🏎️ Glass Racer Website Loaded | Speed is Fragile');
