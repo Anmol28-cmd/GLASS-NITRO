@@ -1,0 +1,192 @@
+// Glass integrity simulation canvas
+
+const integrityCanvas = document.getElementById('integrityCanvas');
+
+if (integrityCanvas) {
+    const ctx = integrityCanvas.getContext('2d');
+    const width = integrityCanvas.width;
+    const height = integrityCanvas.height;
+    
+    // Car representation
+    class GlassCar {
+        constructor() {
+            this.x = width / 2;
+            this.y = height / 2;
+            this.width = 200;
+            this.height = 100;
+            this.integrity = 100;
+            this.cracks = [];
+        }
+        
+        draw() {
+            // Car body
+            ctx.fillStyle = 'rgba(0, 240, 255, 0.1)';
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.8)';
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.rect(
+                this.x - this.width / 2,
+                this.y - this.height / 2,
+                this.width,
+                this.height
+            );
+            ctx.fill();
+            ctx.stroke();
+            
+            // Windshield
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.moveTo(this.x - 40, this.y - 50);
+            ctx.lineTo(this.x + 40, this.y - 50);
+            ctx.lineTo(this.x + 30, this.y - 30);
+            ctx.lineTo(this.x - 30, this.y - 30);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            // Draw cracks
+            this.cracks.forEach(crack => {
+                ctx.strokeStyle = `rgba(255, 255, 255, ${crack.opacity})`;
+                ctx.lineWidth = crack.width;
+                ctx.beginPath();
+                ctx.moveTo(crack.x, crack.y);
+                
+                crack.branches.forEach((branch, i) => {
+                    if (i === 0) {
+                        ctx.moveTo(crack.x, crack.y);
+                    }
+                    ctx.lineTo(branch.x, branch.y);
+                });
+                
+                ctx.stroke();
+            });
+            
+            // Integrity bar
+            const barWidth = this.width;
+            const barHeight = 10;
+            const barX = this.x - barWidth / 2;
+            const barY = this.y + this.height / 2 + 20;
+            
+            // Background
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.fillRect(barX, barY, barWidth, barHeight);
+            
+            // Fill based on integrity
+            const fillWidth = (this.integrity / 100) * barWidth;
+            const color = this.integrity > 70 ? '0, 255, 0' :
+                          this.integrity > 30 ? '255, 255, 0' :
+                          '255, 0, 0';
+            
+            ctx.fillStyle = `rgba(${color}, 0.8)`;
+            ctx.fillRect(barX, barY, fillWidth, barHeight);
+            
+            // Integrity text
+            ctx.fillStyle = 'white';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${Math.floor(this.integrity)}%`, this.x, barY + barHeight + 20);
+        }
+        
+        addCrack(x, y, severity) {
+            const crack = {
+                x: x,
+                y: y,
+                width: severity / 20,
+                opacity: 0.7,
+                branches: []
+            };
+            
+            // Generate branches
+            const branchCount = Math.floor(Math.random() * 3) + 2;
+            for (let i = 0; i < branchCount; i++) {
+                const angle = (Math.PI * 2 * i) / branchCount + Math.random() * 0.5;
+                const length = Math.random() * 40 + 20;
+                
+                crack.branches.push({
+                    x: x + Math.cos(angle) * length,
+                    y: y + Math.sin(angle) * length
+                });
+                
+                // Sub-branches
+                if (Math.random() > 0.5) {
+                    const subAngle = angle + (Math.random() - 0.5) * 0.5;
+                    const subLength = length * 0.6;
+                    crack.branches.push({
+                        x: x + Math.cos(subAngle) * subLength,
+                        y: y + Math.sin(subAngle) * subLength
+                    });
+                }
+            }
+            
+            this.cracks.push(crack);
+            this.integrity -= severity;
+            if (this.integrity < 0) this.integrity = 0;
+        }
+        
+        reset() {
+            this.cracks = [];
+            this.integrity = 100;
+        }
+    }
+    
+    const glassCar = new GlassCar();
+    
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Background grid
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < width; i += 20) {
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, height);
+            ctx.stroke();
+        }
+        
+        for (let i = 0; i < height; i += 20) {
+            ctx.beginPath();
+            ctx.moveTo(0, i);
+            ctx.lineTo(width, i);
+            ctx.stroke();
+        }
+        
+        glassCar.draw();
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    // Click to add cracks
+    integrityCanvas.addEventListener('click', (e) => {
+        const rect = integrityCanvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const severity = Math.random() * 15 + 10;
+        
+        glassCar.addCrack(x, y, severity);
+        
+        if (glassCar.integrity <= 0) {
+            setTimeout(() => {
+                alert('Chassis Core Destroyed! Resetting...');
+                glassCar.reset();
+            }, 500);
+        }
+    });
+}
+
+// Global function for "Simulate Impact" button
+function simulateImpact() {
+    const canvas = document.getElementById('integrityCanvas');
+    if (canvas) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const event = new MouseEvent('click', {
+            clientX: x + canvas.getBoundingClientRect().left,
+            clientY: y + canvas.getBoundingClientRect().top
+        });
+        canvas.dispatchEvent(event);
+    }
+}
